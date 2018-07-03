@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Test</title>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <style>
+    body,html{
+  height: 100%;
+  font-size: 12px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+html {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+ul{
+  margin: 0;
+  padding: 0;
+}
+.header{
+  overflow: hidden;
+  min-width: 380px;
+  width: 100%;
+  background: #efefef;
+  padding: 10px 0;
+    height: 90px;
+}
+.mainContent{
+    overflow: hidden;
+    background: #efefef;
+}
+.main-left,.main-right{
+  float: left;
+  width: 50%;
+  overflow: auto;
+}
+.left-inner-content{
+    padding-left: 10px;
+    padding-right: 5px;
+}
+.right-inner-content{
+    padding-left: 5px;
+    padding-right: 10px;
+}
+.left-inner-content,.right-inner-content{
+}
+.left-inner-main,.right-inner-main{
+  background: #FFF;
+  overflow: auto;
+  padding: 0 10px;
+}
+.left-inner-main div,.right-inner-main div{
+  height: initial;
+}
+#mainContentHolder{
+  position: relative;
+}
+#draggable{
+  position: absolute;
+    z-index: 3;
+    width: 10px;
+    cursor: col-resize;
+    background: transparent;
+}
+</style>
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script>
+  $( function() {
+    $( "#resizable" ).resizable();
+  } );
+  </script>
+</head>
+<body>
+ 
+
+ <div id="mainContent" class="mainContent">
+   <div id="mainContentHolder">
+    <div id="draggable"></div>
+    <div class="main-left">
+      <div class="left-inner-content">
+        <div class="left-inner-main">
+          <h2 style="text-align:right;">Left Side</h2>
+        </div>
+      </div>
+    </div>
+    <div class="main-right">
+      <div class="right-inner-content">
+        <div class="right-inner-main">
+          <h2>Right Side</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+ </div>
+ <script type="text/javascript">
+   $( document ).ready(function() {
+  var lastPosition = null;
+    resizeWindow();
+    $( window ).resize(function() {
+      resizeWindow()
+  });
+  function calculatepercent(position) {
+    var a = position;
+    var b = $("body").width();
+    var c = $("body").width() - position;
+    $('div.main-left').width((returnPerCalc(a,b) + .4) + '%');
+    $('div.main-right').width((returnPerCalc(c,b) - .5) + '%');
+  };
+  function returnPerCalc(a,b){
+    var c = a/b;
+    var d = c*100;
+    return d;
+  };
+  $( "#draggable" ).draggable({ 
+    axis: "x",
+    start: function(a) {
+      calculatepercent(a.target.offsetLeft);
+    },
+    drag: function(b) {
+      calculatepercent(b.target.offsetLeft);
+    },
+    stop: function(c) {
+      calculatepercent(c.target.offsetLeft);
+      lastPosition = c.target.offsetLeft;
+    }
+  });
+  function resizeWindow(){
+    $("#mainContent").height($("body").height() - $(".header").height());
+      $("#mainContentHolder,.left-inner-main,.right-inner-main,#draggable").height($("body").height() - ($(".header").height() + 10));
+       var percent = $("div.main-left").width() / $("body").width() * 100;
+       var position = (lastPosition != null)?((percent * $("body").width())/100):(($("body").width()/2));
+      $("#draggable").css({
+       'left' : position-5
+    });
+  };
+});
+ </script>
+</body>
+</html>
